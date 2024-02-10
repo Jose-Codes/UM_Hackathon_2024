@@ -7,7 +7,6 @@ As well as aid in sending this data to ChatGPT for sentiment analysis.
 import requests
 import json
 import os
-from transformers import pipeline
 import dotenv
 from newsapi import NewsApiClient
 
@@ -15,12 +14,10 @@ from newsapi import NewsApiClient
 dotenv.load_dotenv()
 NEWS_API_KEY = os.getenv('NEWS_API_KEY')
 
-sentiment_pipeline = pipeline("sentiment-analysis")
-
 # Init
 newsapi = NewsApiClient(api_key=NEWS_API_KEY)
 
-def get_news(search_term: str = "Bitcoin") -> json:
+def get_news(search_term: str = "Bitcoin", pipeline=None) -> json:
     """
     This function will get the news from the News API and return it as a JSON object.
     """
@@ -36,7 +33,7 @@ def get_news(search_term: str = "Bitcoin") -> json:
             content = article["content"]
             if content:
                 # Perform sentiment analysis
-                result = sentiment_pipeline(content[:512])  # Limit to first 512 tokens
+                result = pipeline(content[:512])  # Limit to first 512 tokens
                 sentiment = result[0]["label"]
                 if sentiment == "POSITIVE":
                     sentiments["positive"] += 1

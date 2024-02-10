@@ -5,11 +5,14 @@
 import streamlit as st
 from Utils import ChatGPTAPI, NewsAPI
 import streamlit as st
+from transformers import pipeline
+
+sentiment_pipeline = pipeline("sentiment-analysis")
 
 def search_view():
     st.title("News Search and Sentiment Analysis")
     search_term = st.text_input("Enter search term:", "Bitcoin")
-    response = NewsAPI.get_news(search_term)
+    response = NewsAPI.get_news(search_term, pipeline=sentiment_pipeline)
     search_button = st.button("Search")
     if search_button:
         # Use st.markdown to change text color
